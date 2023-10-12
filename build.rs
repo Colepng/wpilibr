@@ -10,7 +10,7 @@ fn main() {
     // println!("cargo:rustc-link-lib=bz2");
 
     // Tell cargo to invalidate the built crate whenever the wrapper changes
-    println!("cargo:rerun-if-changed=../allwpilib/hal/src/main/native/include/hal/Main.h");
+    // println!("cargo:rerun-if-changed=../allwpilib/hal/src/main/native/include/hal/Main.h");
 
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
@@ -18,9 +18,17 @@ fn main() {
     let bindings = bindgen::Builder::default()
         // The input header we would like to generate
         // bindings for.
-        .header("./allwpilib/wpilibc/src/main/native/include/frc/wrapper.h")
-        // .clang_arg("-I../allwpilib")
+        .clang_arg("-x")
+        .clang_arg("c++")
+        // .clang_arg("-include./allwpilib/wpimath/src/main/native/include/units/base.h")
+        .clang_arg("-I./allwpilib/wpimath/src/main/native/include/units/")
+        // .clang_arg("-include./allwpilib/wpiutil/src/main/native/include/wpi/SymbolExports.h")
+        // .clang_arg("-include./allwpilib/wpimath/src/main/native/include/units/formatter.h")
+        .clang_arg("-I./allwpilib/wpiutil/src/main/native/thirdparty/llvm/include/wpi/")
+        .clang_arg("-I./allwpilib/wpiutil/src/main/native/include/wpi/")
+        .clang_arg("-I./allwpilib/wpiutil/src/main/native/include/wpi/sendable/")
         .clang_arg("-I./allwpilib/wpilibc/src/main/native/include/frc/")
+        .header("./allwpilib/wpilibc/src/main/native/include/frc/wrapper.h")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
